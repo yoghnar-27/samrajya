@@ -1,31 +1,45 @@
 import { useState } from 'react';
 import { ThreeCanvas } from './world/ThreeCanvas';
 import { MainMenu } from './ui/MainMenu';
-import type { GamePhase } from './game/types';
+import { TerritoryInspector } from './ui/TerritoryInspector';
+import type { GamePhase, Territory } from './game/types';
 import { Shield, Sparkles, Compass } from 'lucide-react';
 
 export default function App() {
   const [phase, setPhase] = useState<GamePhase>('MAIN_MENU');
+  const [selectedTerritory, setSelectedTerritory] = useState<Territory | null>(null);
   const [activeNotification, setActiveNotification] = useState<string | null>(null);
 
   const handleBeginReign = () => {
-    setActiveNotification('Kingdom View Activated — Preparing Imperial Realm');
+    setActiveNotification('3D Imperial Kingdom Realm Active — Select Territories on Map');
     setPhase('PLAYING');
     setTimeout(() => setActiveNotification(null), 4000);
+  };
+
+  const handleSelectTerritory = (territory: Territory | null) => {
+    setSelectedTerritory(territory);
+    if (territory) {
+      setActiveNotification(`Selected Region: ${territory.name}`);
+      setTimeout(() => setActiveNotification(null), 3000);
+    }
   };
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-slate-950 font-body select-none">
       
       {/* 1. FULLSCREEN 3D VIEWPORT CANVAS */}
-      <ThreeCanvas isMenuMode={phase === 'MAIN_MENU'} />
+      <ThreeCanvas
+        isMenuMode={phase === 'MAIN_MENU'}
+        selectedTerritoryId={selectedTerritory?.id || null}
+        onSelectTerritory={handleSelectTerritory}
+      />
 
       {/* 2. MAIN MENU OVERLAY (Phase: MAIN_MENU) */}
       {phase === 'MAIN_MENU' && (
         <MainMenu onBeginReign={handleBeginReign} />
       )}
 
-      {/* 3. IN-GAME HUD SHELL (Phase: PLAYING - Preliminary HUD View) */}
+      {/* 3. IN-GAME HUD SHELL (Phase: PLAYING) */}
       {phase === 'PLAYING' && (
         <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between p-4 md:p-6">
           
@@ -40,7 +54,7 @@ export default function App() {
                   SAMRAJYA
                 </h2>
                 <p className="text-[10px] text-stone-400 font-heading">
-                  IMPERIAL KINGDOM VIEW
+                  3D STRATEGIC KINGDOM WORLD
                 </p>
               </div>
             </div>
@@ -48,12 +62,15 @@ export default function App() {
             {/* Strategic Controls Hint */}
             <div className="pointer-events-auto royal-panel px-4 py-2 flex items-center gap-2 rounded text-xs text-amber-200/90 font-heading">
               <Compass className="w-4 h-4 text-amber-400" />
-              <span>Drag Mouse to Rotate • Scroll to Zoom</span>
+              <span>Click Territory on Map to Inspect • Drag to Orbit</span>
             </div>
 
             {/* Back to Menu Button */}
             <button
-              onClick={() => setPhase('MAIN_MENU')}
+              onClick={() => {
+                setPhase('MAIN_MENU');
+                setSelectedTerritory(null);
+              }}
               className="pointer-events-auto btn-royal-secondary text-xs px-3 py-1.5"
             >
               MAIN MENU
@@ -68,10 +85,16 @@ export default function App() {
             </div>
           )}
 
+          {/* Territory Inspector Overlay Card */}
+          <TerritoryInspector
+            territory={selectedTerritory}
+            onClose={() => setSelectedTerritory(null)}
+          />
+
           {/* Bottom Bar Shell */}
           <div className="pointer-events-auto self-center royal-panel px-6 py-3 rounded text-xs text-stone-300 font-heading flex items-center gap-4">
-            <span className="text-amber-400 font-bold">PHASE 1 ACTIVE:</span>
-            <span>3D Imperial World & Royal Visual System</span>
+            <span className="text-amber-400 font-bold">PHASE 2 ACTIVE:</span>
+            <span>4 Kingdom Capitals • 6 Neutral Regions • 3D Armies • Interactive Camera</span>
           </div>
 
         </div>
