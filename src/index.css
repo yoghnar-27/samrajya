@@ -1,28 +1,28 @@
 @import "tailwindcss" layer(utilities);
 
 :root {
-  /* Color Palette Tokens */
-  --bg-deep-indigo: #0a0d18;
-  --bg-royal-navy: #111628;
-  --bg-dark-sandstone: #1a1612;
-  --bg-parchment-dark: #1f1b16;
+  /* Royal Color Palette Tokens */
+  --bg-deep-indigo: #080a14;
+  --bg-royal-navy: #0e1324;
+  --bg-dark-sandstone: #1a1510;
+  --bg-parchment-dark: #1f1a14;
   --bg-parchment-light: #f5eedc;
   
-  --text-gold-bright: #ebd07b;
+  --text-gold-bright: #fef08a;
   --text-gold-antique: #d4af37;
   --text-parchment: #e2d7c5;
-  --text-muted-sand: #aa9c86;
+  --text-muted-sand: #a89a85;
   --text-dark: #221c15;
 
   --accent-gold: #d4af37;
-  --accent-gold-glow: rgba(212, 175, 55, 0.35);
+  --accent-gold-glow: rgba(212, 175, 55, 0.4);
   --accent-bronze: #a37238;
   --accent-crimson: #991b1b;
-  --accent-emerald: #064e3b;
+  --accent-emerald: #047857;
   
-  --border-gold-subtle: rgba(212, 175, 55, 0.25);
-  --border-gold-strong: rgba(212, 175, 55, 0.65);
-  --border-bronze: rgba(163, 114, 56, 0.4);
+  --border-gold-subtle: rgba(212, 175, 55, 0.3);
+  --border-gold-strong: rgba(212, 175, 55, 0.75);
+  --border-bronze: rgba(163, 114, 56, 0.45);
 
   --font-display: 'Cinzel Decorative', 'Cinzel', serif;
   --font-heading: 'Cinzel', serif;
@@ -46,7 +46,7 @@ html, body, #root {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Typography Classes */
+/* Typography Utility Classes */
 .font-display {
   font-family: var(--font-display);
 }
@@ -59,25 +59,26 @@ html, body, #root {
   font-family: var(--font-body);
 }
 
-/* Gold Text Gradient */
+/* Gold Text Gradient & Glow */
 .text-gold-gradient {
-  background: linear-gradient(135deg, #fff2c6 0%, #d4af37 50%, #aa7e22 100%);
+  background: linear-gradient(135deg, #fffbeb 0%, #facc15 40%, #d4af37 70%, #a16207 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gold-glow {
-  text-shadow: 0 0 16px rgba(212, 175, 55, 0.4), 0 0 32px rgba(212, 175, 55, 0.2);
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.5), 0 0 40px rgba(212, 175, 55, 0.25);
 }
 
 /* Ornate Royal Frame & Panel System */
 .royal-panel {
-  background: linear-gradient(180deg, rgba(24, 21, 17, 0.92) 0%, rgba(13, 11, 9, 0.96) 100%);
+  background: linear-gradient(180deg, rgba(26, 21, 16, 0.94) 0%, rgba(12, 10, 8, 0.97) 100%);
   border: 1px solid var(--border-gold-subtle);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 235, 180, 0.1);
-  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 240, 190, 0.12);
+  backdrop-filter: blur(14px);
   position: relative;
-  border-radius: 4px;
+  border-radius: 6px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .royal-panel::before {
@@ -89,30 +90,15 @@ html, body, #root {
   bottom: -2px;
   border: 1px solid var(--border-gold-subtle);
   pointer-events: none;
-  border-radius: 6px;
-  opacity: 0.5;
-}
-
-/* Corner Motif Decorator */
-.royal-corner-decor {
-  position: relative;
-}
-
-.royal-corner-decor::after {
-  content: '❖';
-  position: absolute;
-  top: 6px;
-  right: 10px;
-  font-size: 10px;
-  color: var(--accent-gold);
-  opacity: 0.7;
+  border-radius: 8px;
+  opacity: 0.6;
 }
 
 /* Ornate Royal Button System */
 .btn-royal-primary {
   position: relative;
-  background: linear-gradient(180deg, #3d2f19 0%, #20170a 100%);
-  color: #f7e7c4;
+  background: linear-gradient(180deg, #45341b 0%, #241a0c 100%);
+  color: #fffbeb;
   border: 1px solid var(--border-gold-strong);
   font-family: var(--font-heading);
   font-weight: 700;
@@ -122,7 +108,7 @@ html, body, #root {
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 12px rgba(212, 175, 55, 0.15);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65), 0 0 16px rgba(212, 175, 55, 0.2);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -130,23 +116,23 @@ html, body, #root {
 }
 
 .btn-royal-primary:hover {
-  background: linear-gradient(180deg, #594424 0%, #302310 100%);
+  background: linear-gradient(180deg, #634b27 0%, #382712 100%);
   border-color: #facc15;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 0 0 24px rgba(212, 175, 55, 0.4);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.75), 0 0 30px rgba(212, 175, 55, 0.5);
   transform: translateY(-2px);
   color: #ffffff;
 }
 
 .btn-royal-primary:active {
   transform: translateY(1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(212, 175, 55, 0.2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 12px rgba(212, 175, 55, 0.25);
 }
 
 .btn-royal-secondary {
   position: relative;
-  background: rgba(18, 22, 36, 0.85);
+  background: rgba(14, 19, 36, 0.9);
   color: var(--text-parchment);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.35);
   font-family: var(--font-heading);
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -155,7 +141,7 @@ html, body, #root {
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.25s ease;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -163,29 +149,30 @@ html, body, #root {
 }
 
 .btn-royal-secondary:hover {
-  background: rgba(28, 35, 58, 0.95);
+  background: rgba(24, 32, 58, 0.95);
   border-color: var(--accent-gold);
   color: #ffffff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 14px rgba(212, 175, 55, 0.2);
 }
 
-/* Custom Scrollbar */
+/* Custom Antique Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(10, 13, 24, 0.8);
+  background: rgba(8, 10, 20, 0.85);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--accent-bronze);
   border-radius: 3px;
+  border: 1px solid var(--border-gold-subtle);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-gold);
 }
 
-/* Subtle Indian Geometric Ornamental Line */
+/* Indian Geometric Divider */
 .ornamental-hr {
   height: 1px;
   background: linear-gradient(90deg, transparent 0%, var(--accent-gold) 50%, transparent 100%);
@@ -204,14 +191,4 @@ html, body, #root {
   color: var(--accent-gold);
   background: var(--bg-dark-sandstone);
   padding: 0 6px;
-}
-
-/* Ambient Pulse Animation */
-@keyframes ambientPulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
-}
-
-.animate-ambient-pulse {
-  animation: ambientPulse 4s ease-in-out infinite;
 }
