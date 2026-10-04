@@ -10,6 +10,8 @@ interface InGameHUDProps {
   selectedTerritory: Territory | null;
   onDeselectTerritory: () => void;
   onThrowCowriesClick: () => void;
+  isRollingCowries: boolean;
+  movesRemaining: number | null;
   onBackToMenu: () => void;
 }
 
@@ -19,6 +21,8 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
   selectedTerritory,
   onDeselectTerritory,
   onThrowCowriesClick,
+  isRollingCowries,
+  movesRemaining,
   onBackToMenu
 }) => {
   const civ = CIVILIZATIONS[civId] || CIVILIZATIONS.CHOLA;
@@ -30,7 +34,7 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
       {/* 1. TOP BAR */}
       <div className="flex items-center justify-between w-full gap-4">
         
-        {/* TOP LEFT: SAMRAJYA BADGE & RULER TITLE */}
+        {/* TOP LEFT */}
         <div className="pointer-events-auto royal-panel px-4 py-2.5 rounded flex items-center gap-3 border border-[var(--border-gold-subtle)]">
           <Crown className="w-6 h-6 text-amber-400 shrink-0" />
           <div>
@@ -48,10 +52,9 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
           </div>
         </div>
 
-        {/* TOP RIGHT: EMPIRE RESOURCE STATS */}
+        {/* TOP RIGHT */}
         <div className="pointer-events-auto flex items-center gap-3">
           
-          {/* Territory Count */}
           <div className="royal-panel px-3.5 py-2 rounded flex items-center gap-2.5 text-xs font-heading border border-[var(--border-gold-subtle)]">
             <MapPin className="w-4 h-4 text-amber-400" />
             <div>
@@ -60,7 +63,6 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
             </div>
           </div>
 
-          {/* Army Count */}
           <div className="royal-panel px-3.5 py-2 rounded flex items-center gap-2.5 text-xs font-heading border border-[var(--border-gold-subtle)]">
             <Swords className="w-4 h-4 text-red-400" />
             <div>
@@ -69,7 +71,6 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
             </div>
           </div>
 
-          {/* Resources */}
           <div className="royal-panel px-3.5 py-2 rounded flex items-center gap-2.5 text-xs font-heading border border-[var(--border-gold-subtle)]">
             <Coins className="w-4 h-4 text-amber-400" />
             <div>
@@ -78,7 +79,6 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
             </div>
           </div>
 
-          {/* Back to Menu */}
           <button
             onClick={onBackToMenu}
             className="btn-royal-secondary text-xs px-3 py-2"
@@ -89,7 +89,7 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
 
       </div>
 
-      {/* 2. MIDDLE REGION: LEFT RULER PANEL & RIGHT CONTEXT INSPECTOR */}
+      {/* 2. MIDDLE REGION */}
       <div className="flex justify-between items-start w-full my-auto pointer-events-none">
         
         {/* LEFT COMPACT RULER PANEL */}
@@ -109,14 +109,21 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
           </div>
 
           <div className="text-xs font-heading space-y-2">
-            <div className="flex justify-between text-stone-300">
-              <span className="text-stone-400">ARCHITECTURAL STYLE:</span>
-              <span className="text-amber-200 text-right">{civ.architecturalStyle}</span>
-            </div>
-            <div className="bg-stone-900/80 p-2 rounded border border-stone-800 text-[11px] text-amber-300">
-              <span className="font-bold block mb-0.5 text-amber-400">DYNASTY BONUS:</span>
-              {civ.bonus}
-            </div>
+            {movesRemaining !== null && movesRemaining > 0 ? (
+              <div className="bg-amber-950/90 p-2.5 rounded border border-amber-400/80 text-center animate-pulse">
+                <span className="text-amber-300 font-bold text-sm block">
+                  MOVEMENT POINTS: {movesRemaining}
+                </span>
+                <span className="text-[10px] text-stone-300 block mt-0.5">
+                  Click army to march across trade pathways
+                </span>
+              </div>
+            ) : (
+              <div className="bg-stone-900/80 p-2 rounded border border-stone-800 text-[11px] text-amber-300">
+                <span className="font-bold block mb-0.5 text-amber-400">DYNASTY BONUS:</span>
+                {civ.bonus}
+              </div>
+            )}
           </div>
         </div>
 
@@ -129,7 +136,7 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
         )}
       </div>
 
-      {/* 3. BOTTOM CENTER: PRIMARY "THROW COWRIES" ACTION BAR */}
+      {/* 3. BOTTOM CENTER */}
       <div className="pointer-events-auto self-center flex flex-col items-center gap-3">
         
         {/* Secondary Strategy Actions Bar */}
@@ -158,10 +165,13 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
         {/* Large Primary "THROW COWRIES" Button */}
         <button
           onClick={onThrowCowriesClick}
-          className="btn-royal-primary px-10 py-4 text-base font-bold tracking-widest shadow-2xl flex items-center gap-3 border-2 border-amber-400/80"
+          disabled={isRollingCowries}
+          className={`btn-royal-primary px-10 py-4 text-base font-bold tracking-widest shadow-2xl flex items-center gap-3 border-2 border-amber-400/80 ${
+            isRollingCowries ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
         >
-          <Dices className="w-6 h-6 text-amber-300 animate-bounce" />
-          <span>THROW COWRIES</span>
+          <Dices className={`w-6 h-6 text-amber-300 ${isRollingCowries ? 'animate-spin' : 'animate-bounce'}`} />
+          <span>{isRollingCowries ? 'ROLLING COWRIES...' : 'THROW COWRIES'}</span>
         </button>
 
       </div>
