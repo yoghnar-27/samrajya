@@ -1,27 +1,56 @@
 import { useState } from 'react';
 import { ThreeCanvas } from './world/ThreeCanvas';
 import { MainMenu } from './ui/MainMenu';
-import { TerritoryInspector } from './ui/TerritoryInspector';
-import type { GamePhase, Territory } from './game/types';
-import { Shield, Sparkles, Compass } from 'lucide-react';
+import { RulerSelectModal } from './ui/RulerSelectModal';
+import { CivSelectModal } from './ui/CivSelectModal';
+import { InGameHUD } from './ui/InGameHUD';
+import type { GamePhase, RulerType, CivilizationId, Territory } from './game/types';
+import { INITIAL_TERRITORIES } from './data/territories';
+import { Sparkles } from 'lucide-react';
 
 export default function App() {
   const [phase, setPhase] = useState<GamePhase>('MAIN_MENU');
+  const [ruler, setRuler] = useState<RulerType>('KING');
+  const [civId, setCivId] = useState<CivilizationId>('CHOLA');
   const [selectedTerritory, setSelectedTerritory] = useState<Territory | null>(null);
   const [activeNotification, setActiveNotification] = useState<string | null>(null);
 
-  const handleBeginReign = () => {
-    setActiveNotification('3D Imperial Kingdom Realm Active — Select Territories on Map');
-    setPhase('PLAYING');
-    setTimeout(() => setActiveNotification(null), 4000);
+  // Transition 1: Main Menu -> Ruler Selection
+  const handleStartReign = () => {
+    setPhase('RULER_SELECT');
   };
 
-  const handleSelectTerritory = (territory: Territory | null) => {
-    setSelectedTerritory(territory);
-    if (territory) {
-      setActiveNotification(`Selected Region: ${territory.name}`);
-      setTimeout(() => setActiveNotification(null), 3000);
+  // Transition 2: Ruler Selection -> Dynasty Selection
+  const handleConfirmRuler = (selectedRuler: RulerType) => {
+    setRuler(selectedRuler);
+    setPhase('CIV_SELECT');
+  };
+
+  // Transition 3: Dynasty Selection -> Enter 3D World Play
+  const handleConfirmCiv = (selectedCiv: CivilizationId) => {
+    setCivId(selectedCiv);
+    setPhase('PLAYING');
+
+    // Auto focus camera on the chosen civilization's capital
+    const capitalMap: Record<CivilizationId, string> = {
+      CHOLA: 't_chola_capital',
+      VIJAYANAGARA: 't_vijayanagara_capital',
+      MAURYA: 't_maurya_capital',
+      RAJPUT: 't_rajput_capital'
+    };
+
+    const targetCapital = INITIAL_TERRITORIES.find((t) => t.id === capitalMap[selectedCiv]);
+    if (targetCapital) {
+      setSelectedTerritory(targetCapital);
     }
+
+    setActiveNotification(`Entered ${selectedCiv} Realm — Empire Established!`);
+    setTimeout(() => setActiveNotification(null), 4500);
+  };
+
+  const handleThrowCowries = () => {
+    setActiveNotification('Cowrie shell mechanics ready for Phase 4!');
+    setTimeout(() => setActiveNotification(null), 3000);
   };
 
   return (
@@ -31,72 +60,50 @@ export default function App() {
       <ThreeCanvas
         isMenuMode={phase === 'MAIN_MENU'}
         selectedTerritoryId={selectedTerritory?.id || null}
-        onSelectTerritory={handleSelectTerritory}
+        onSelectTerritory={(t) => setSelectedTerritory(t)}
       />
 
-      {/* 2. MAIN MENU OVERLAY (Phase: MAIN_MENU) */}
+      {/* 2. MAIN MENU OVERLAY */}
       {phase === 'MAIN_MENU' && (
-        <MainMenu onBeginReign={handleBeginReign} />
+        <MainMenu onBeginReign={handleStartReign} />
       )}
 
-      {/* 3. IN-GAME HUD SHELL (Phase: PLAYING) */}
+      {/* 3. RULER SELECTION OVERLAY */}
+      {phase === 'RULER_SELECT' && (
+        <RulerSelectModal
+          onSelectRuler={handleConfirmRuler}
+          onBackToMenu={() => setPhase('MAIN_MENU')}
+        />
+      )}
+
+      {/* 4. DYNASTY SELECTION OVERLAY */}
+      {phase === 'CIV_SELECT' && (
+        <CivSelectModal
+          onSelectCiv={handleConfirmCiv}
+          onBackToRuler={() => setPhase('RULER_SELECT')}
+        />
+      )}
+
+      {/* 5. IN-GAME ROYAL STRATEGY HUD */}
       {phase === 'PLAYING' && (
-        <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between p-4 md:p-6">
-          
-          {/* Top Header Panel */}
-          <div className="flex items-center justify-between w-full">
-            
-            {/* Title Badge */}
-            <div className="pointer-events-auto royal-panel px-4 py-2 flex items-center gap-3 rounded">
-              <Shield className="w-5 h-5 text-[var(--accent-gold)]" />
-              <div>
-                <h2 className="font-display text-base font-bold text-gold-gradient tracking-wider">
-                  SAMRAJYA
-                </h2>
-                <p className="text-[10px] text-stone-400 font-heading">
-                  3D STRATEGIC KINGDOM WORLD
-                </p>
-              </div>
-            </div>
+        <InGameHUD
+          ruler={ruler}
+          civId={civId}
+          selectedTerritory={selectedTerritory}
+          onDeselectTerritory={() => setSelectedTerritory(null)}
+          onThrowCowriesClick={handleThrowCowries}
+          onBackToMenu={() => {
+            setPhase('MAIN_MENU');
+            setSelectedTerritory(null);
+          }}
+        />
+      )}
 
-            {/* Strategic Controls Hint */}
-            <div className="pointer-events-auto royal-panel px-4 py-2 flex items-center gap-2 rounded text-xs text-amber-200/90 font-heading">
-              <Compass className="w-4 h-4 text-amber-400" />
-              <span>Click Territory on Map to Inspect • Drag to Orbit</span>
-            </div>
-
-            {/* Back to Menu Button */}
-            <button
-              onClick={() => {
-                setPhase('MAIN_MENU');
-                setSelectedTerritory(null);
-              }}
-              className="pointer-events-auto btn-royal-secondary text-xs px-3 py-1.5"
-            >
-              MAIN MENU
-            </button>
-          </div>
-
-          {/* Center Toast Notification */}
-          {activeNotification && (
-            <div className="self-center pointer-events-auto royal-panel border-amber-500/60 px-6 py-3 rounded-full flex items-center gap-3 text-amber-200 text-sm font-heading animate-in fade-in slide-in-from-top-4 duration-300">
-              <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
-              <span>{activeNotification}</span>
-            </div>
-          )}
-
-          {/* Territory Inspector Overlay Card */}
-          <TerritoryInspector
-            territory={selectedTerritory}
-            onClose={() => setSelectedTerritory(null)}
-          />
-
-          {/* Bottom Bar Shell */}
-          <div className="pointer-events-auto self-center royal-panel px-6 py-3 rounded text-xs text-stone-300 font-heading flex items-center gap-4">
-            <span className="text-amber-400 font-bold">PHASE 2 ACTIVE:</span>
-            <span>4 Kingdom Capitals • 6 Neutral Regions • 3D Armies • Interactive Camera</span>
-          </div>
-
+      {/* CENTER TOAST NOTIFICATION */}
+      {activeNotification && (
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-auto royal-panel border-amber-500/60 px-6 py-3 rounded-full flex items-center gap-3 text-amber-200 text-sm font-heading animate-in fade-in slide-in-from-top-4 duration-300 shadow-2xl">
+          <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
+          <span>{activeNotification}</span>
         </div>
       )}
 
