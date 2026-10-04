@@ -123,7 +123,7 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
     groundMesh.receiveShadow = true;
     terrainGroup.add(groundMesh);
 
-    // Animated River
+    // Animated River Surface
     const riverGeo = new THREE.PlaneGeometry(85, 9, 32, 1);
     const riverMat = new THREE.MeshStandardMaterial({
       color: '#1e40af',
@@ -166,49 +166,57 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
 
     scene.add(terrainGroup);
 
-    // 6. 3D COWRIE TRAY & 6 COWRIE SHELLS
+    // 6. 3D COWRIE TRAY & 6 RECOGNIZABLE 3D COWRIE SHELLS
     const cowrieGroup = new THREE.Group();
     cowrieGroup.position.set(0, 2.5, 8);
 
-    // Brass Tray Base
-    const trayGeo = new THREE.CylinderGeometry(4.5, 5, 0.4, 32);
+    // Brass Throwing Tray Base
+    const trayGeo = new THREE.CylinderGeometry(4.8, 5.2, 0.45, 32);
     const trayMat = new THREE.MeshStandardMaterial({ color: '#b45309', metalness: 0.8, roughness: 0.2 });
     const trayMesh = new THREE.Mesh(trayGeo, trayMat);
     trayMesh.receiveShadow = true;
     cowrieGroup.add(trayMesh);
 
-    const trayLipGeo = new THREE.TorusGeometry(4.7, 0.15, 12, 32);
+    const trayLipGeo = new THREE.TorusGeometry(5.0, 0.18, 12, 32);
     const trayLipMat = new THREE.MeshStandardMaterial({ color: '#f59e0b', metalness: 0.9, roughness: 0.1 });
     const trayLip = new THREE.Mesh(trayLipGeo, trayLipMat);
     trayLip.rotation.x = Math.PI / 2;
-    trayLip.position.y = 0.2;
+    trayLip.position.y = 0.22;
     cowrieGroup.add(trayLip);
 
-    // Create 6 3D Cowrie Shells
+    // Create 6 Authentic 3D Ivory Cowrie Shells
     const cowrieShells: { mesh: THREE.Group; velocityY: number; rotVelX: number; rotVelY: number; targetOpen: boolean }[] = [];
 
     for (let i = 0; i < 6; i++) {
       const shellGroup = new THREE.Group();
       
-      // Outer Porcelain Shell Body
-      const bodyGeo = new THREE.SphereGeometry(0.6, 12, 8);
-      bodyGeo.scale(1, 0.4, 1.4);
-      const bodyMat = new THREE.MeshStandardMaterial({ color: '#fef3c7', roughness: 0.3, metalness: 0.1 });
+      // Curved Ivory Porcelain Outer Shell Body
+      const bodyGeo = new THREE.SphereGeometry(0.7, 14, 10);
+      bodyGeo.scale(1.0, 0.42, 1.45);
+      const bodyMat = new THREE.MeshStandardMaterial({ color: '#fef3c7', roughness: 0.25, metalness: 0.1 });
       const shellBody = new THREE.Mesh(bodyGeo, bodyMat);
       shellBody.castShadow = true;
       shellGroup.add(shellBody);
 
-      // Recessed Mouth Aperture (Open Side)
-      const apertureGeo = new THREE.BoxGeometry(0.25, 0.1, 0.9);
-      const apertureMat = new THREE.MeshStandardMaterial({ color: '#78350f', roughness: 0.8 });
+      // Recessed Dark Aperture Slit (Cowrie Mouth)
+      const apertureGeo = new THREE.BoxGeometry(0.28, 0.12, 1.0);
+      const apertureMat = new THREE.MeshStandardMaterial({ color: '#572b0c', roughness: 0.8 });
       const aperture = new THREE.Mesh(apertureGeo, apertureMat);
-      aperture.position.set(0, 0.15, 0);
+      aperture.position.set(0, 0.16, 0);
       shellGroup.add(aperture);
 
-      // Initial grid layout inside tray
+      // Shell Ridge Accents
+      const ridgeGeo = new THREE.TorusGeometry(0.32, 0.04, 6, 12);
+      const ridgeMat = new THREE.MeshStandardMaterial({ color: '#d97706', roughness: 0.4 });
+      const ridge = new THREE.Mesh(ridgeGeo, ridgeMat);
+      ridge.rotation.x = Math.PI / 2;
+      ridge.position.y = 0.18;
+      shellGroup.add(ridge);
+
+      // Layout in tray
       const col = i % 3;
       const row = Math.floor(i / 3);
-      shellGroup.position.set((col - 1) * 2.0, 0.4, (row - 0.5) * 2.0);
+      shellGroup.position.set((col - 1) * 2.1, 0.4, (row - 0.5) * 2.1);
 
       cowrieGroup.add(shellGroup);
 
@@ -226,7 +234,7 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
     cowrieShellsRef.current = cowrieShells;
 
     // 7. IMPACT SHOCKWAVE RING
-    const shockwaveGeo = new THREE.RingGeometry(0.5, 1.2, 32);
+    const shockwaveGeo = new THREE.RingGeometry(0.5, 1.4, 32);
     const shockwaveMat = new THREE.MeshStandardMaterial({
       color: '#facc15',
       side: THREE.DoubleSide,
@@ -313,7 +321,7 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
       animationFrameId = requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
-      // Camera lerp
+      // Camera cubic lerp
       currentLookAt.current.lerp(targetLookAt.current, 0.08);
       camera.position.lerp(targetCameraPos.current, 0.08);
       camera.lookAt(currentLookAt.current);
@@ -372,38 +380,33 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
   // Handle Camera Zoom to Cowrie Tray on Roll
   useEffect(() => {
     if (isRollingCowries) {
-      // Zoom camera directly to Cowrie Tray
       targetLookAt.current.set(0, 2.5, 8);
-      targetCameraPos.current.set(0, 9, 13);
+      targetCameraPos.current.set(0, 9.5, 13.5);
 
-      // Assign roll velocities to 3D shells
       if (cowrieShellsRef.current.length === 6 && cowrieRollResult) {
         cowrieShellsRef.current.forEach((shell, idx) => {
-          shell.velocityY = 0.25 + Math.random() * 0.15;
-          shell.rotVelX = (Math.random() - 0.5) * 0.4;
-          shell.rotVelY = (Math.random() - 0.5) * 0.4;
+          shell.velocityY = 0.28 + Math.random() * 0.18;
+          shell.rotVelX = (Math.random() - 0.5) * 0.5;
+          shell.rotVelY = (Math.random() - 0.5) * 0.5;
           shell.targetOpen = cowrieRollResult.shells[idx];
         });
 
-        // Tumble animation interval
         let steps = 0;
         const interval = setInterval(() => {
           steps++;
           cowrieShellsRef.current.forEach((shell) => {
             shell.mesh.position.y += shell.velocityY;
-            shell.velocityY -= 0.02; // gravity
+            shell.velocityY -= 0.022; // gravity
             if (shell.mesh.position.y < 0.4) shell.mesh.position.y = 0.4;
 
             shell.mesh.rotation.x += shell.rotVelX;
             shell.mesh.rotation.z += shell.rotVelY;
           });
 
-          if (steps >= 35) {
+          if (steps >= 38) {
             clearInterval(interval);
-            // Settle shell orientations matching exact open/closed states
             cowrieShellsRef.current.forEach((shell) => {
               shell.mesh.position.y = 0.4;
-              // Open mouth faces up (z-rotation 0), closed faces down (z-rotation PI)
               shell.mesh.rotation.x = shell.targetOpen ? 0 : Math.PI;
               shell.mesh.rotation.z = 0;
             });
@@ -427,7 +430,6 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
       const dstT = INITIAL_TERRITORIES.find((t) => t.id === movingArmy.targetId);
 
       if (srcT && dstT) {
-        // Focus camera on marching unit
         const startPos = new THREE.Vector3(srcT.position.x, srcT.position.y, srcT.position.z);
         const endPos = new THREE.Vector3(dstT.position.x, dstT.position.y, dstT.position.z);
 
@@ -445,7 +447,6 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
           if (progress >= 1.0) {
             clearInterval(marchInterval);
             
-            // Trigger visual shockwave impact ring at destination
             if (shockwaveRingRef.current) {
               shockwaveRingRef.current.position.set(dstT.position.x, dstT.position.y + 0.1, dstT.position.z);
               shockwaveRingRef.current.scale.set(1, 1, 1);
