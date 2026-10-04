@@ -1,32 +1,55 @@
-# React + TypeScript + Vite
+# 🏛️ SAMRAJYA
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+### Rise. Rule. Reclaim.
 
-Currently, two official plugins are available:
+**SAMRAJYA** is a 3D civilization strategy game inspired by the traditional Indian game of **Pachisi**, reimagined as an immersive ancient-India-inspired strategic experience.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Instead of playing on a conventional flat board, players enter a living 3D world of kingdoms, forts, villages, armies, rivers and territories.
 
-## React Compiler
+Players take the role of a **King or Queen**, build and defend their civilization, command armies, conquer territories and fight to reclaim their fallen kingdom.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the Oxlint configuration
+## 🎯 Problem Statement
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+**SIH26208 — Student Innovation**
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+> Challenge your creative mind to conceptualize and develop unique toys and games based on our civilization, history, culture, etc.
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+**Theme:** Toys & Games  
+**Category:** Software  
+**Organization:** AICTE  
+**Hackathon:** Smart India Hackathon 2026
+
+---
+
+## 💡 Our Idea
+
+Traditional Indian games are an important part of India's cultural heritage, but many of them are experienced primarily as physical or historical artifacts.
+
+SAMRAJYA aims to bring one such traditional game into a modern interactive environment.
+
+We take the core idea of **Pachisi — especially its cowrie-based movement — and combine it with civilization building, territory control and strategic decision-making.**
+
+### From Traditional Game → Interactive Civilization
+
+```text
+Traditional Pachisi
+        ↓
+    Cowrie Throw
+        ↓
+   Movement System
+        ↓
+    3D World
+        ↓
+ Explore / Defend / Attack
+        ↓
+   Capture Territory
+        ↓
+   Build Civilization
+        ↓
+    Kingdom Falls
+        ↓
+    Reclaim Kingdom
+        ↓
+   Build Your SAMRAJYA
