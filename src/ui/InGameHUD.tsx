@@ -12,6 +12,8 @@ interface InGameHUDProps {
   onThrowCowriesClick: () => void;
   isRollingCowries: boolean;
   movesRemaining: number | null;
+  resources: number;
+  territoryCount: number;
   onBackToMenu: () => void;
 }
 
@@ -23,6 +25,8 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
   onThrowCowriesClick,
   isRollingCowries,
   movesRemaining,
+  resources,
+  territoryCount,
   onBackToMenu
 }) => {
   const civ = CIVILIZATIONS[civId] || CIVILIZATIONS.CHOLA;
@@ -59,7 +63,7 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
             <MapPin className="w-4 h-4 text-amber-400" />
             <div>
               <span className="text-[10px] text-stone-400 block">REALMS</span>
-              <span className="text-amber-200 font-bold">3 / 14</span>
+              <span className="text-amber-200 font-bold">{territoryCount} / 14</span>
             </div>
           </div>
 
@@ -75,7 +79,7 @@ export const InGameHUD: React.FC<InGameHUDProps> = ({
             <Coins className="w-4 h-4 text-amber-400" />
             <div>
               <span className="text-[10px] text-stone-400 block">TREASURY</span>
-              <span className="text-amber-200 font-bold">220 Wealth</span>
+              <span className="text-amber-200 font-bold">{resources} Wealth</span>
             </div>
           </div>
 
